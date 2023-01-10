@@ -1,0 +1,33 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: my
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - project: test1
+          - project: test2
+  template:
+    metadata:
+      name: 'my-{{project}}'
+    spec:
+      destination:
+        namespace: '{{project}}-dev-deploy'
+        server: "cluster url"
+      source:
+        path: apps/{{project}}/overlays/test/
+        repoURL: "git deploy repo url"
+        targetRevision: main
+        directory:
+          recurse: false
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          selfHeal: true
+          prune: true
+      project: '{{project}}'
+---

@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test1-dev
+  namespace: argocd
+spec:
+  destination:
+    namespace: test1-dev-deploy
+    server: "cluster url"
+  source:
+    path: apps/test1/overlays/dev/
+    repoURL: "git repo url"
+    targetRevision: main
+    directory:
+      recurse: false
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+  project: test1
+---
